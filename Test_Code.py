@@ -78,12 +78,12 @@ for file_name in file_paths:
     print(file_name) 
 
 # writing files to a zipfile 
-zip_name = today.strftime("%Y") + today.strftime("%m") + today.strftime("%d") + '_'+ today.strftime("%H%M%S") + '_' + hash_directory('Test Folder/Origin') + '.zip'
-print(zip_name)
-with ZipFile(zip_name,'w') as zip: 
+#zip_name = today.strftime("%Y") + today.strftime("%m") + today.strftime("%d") + '_'+ today.strftime("%H%M%S") + '_' + hash_directory('Test Folder/Origin') + '.zip'
+#print(zip_name)
+#with ZipFile(zip_name,'w') as zip: 
     # writing each file one by one 
-    for file in file_paths: 
-        zip.write(file) 
+    #for file in file_paths: 
+        #zip.write(file) 
 
 sync('Test Folder/Origin', 'Test Folder/Destination', 'diff', purge = True, content = True, create = True)
 sync('Test Folder/Origin', 'Test Folder/Destination', 'sync', purge = True, content = True, create = True)
