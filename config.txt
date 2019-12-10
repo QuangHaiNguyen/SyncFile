@@ -1,2 +1,2 @@
-SCR = Test Folder/Origin
-TARGET = Test Folder/Destination
+SOURCE=Test Folder/Origin
+TARGET1=Test Folder/Destination
