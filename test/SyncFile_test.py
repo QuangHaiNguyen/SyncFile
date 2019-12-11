@@ -1,4 +1,4 @@
-import SyncFile
+from app import SyncFile
 import unittest
 
 config_file_empty = 'config_empty.txt'
@@ -19,5 +19,4 @@ class TestReadConfigFile (unittest.TestCase):
         self.assertRaises(Exception, SyncFile.read_config_file(config_file_empty, config_list))
 
 
-unittest.main()
 
