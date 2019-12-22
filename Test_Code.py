@@ -37,7 +37,7 @@ def get_digest(file_path):
 
 #hash a folder
 def hash_directory(path):
-    digest = hashlib.sha1()
+    digest = hashlib.sha256()
 
     for root, dirs, files in os.walk(path):
         for names in files:
