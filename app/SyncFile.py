@@ -102,6 +102,10 @@ def get_destination_path(config_list, dest_path):
         # check if the folder format is TARGETx= with x = 1,2,3...
         if(config_list[index][:8] == 'TARGET' + str(index) + '='):
             dest_path.append(config_list[index][8:])
+        
+        #skip any empty line
+        elif config_list[index][:8] == "":
+            continue
         else:
             raise ValueError('[Error] Wrong destination folder format')
 
