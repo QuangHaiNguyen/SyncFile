@@ -107,6 +107,7 @@ def get_destination_path(config_list, dest_path):
         elif config_list[index][:8] == "":
             continue
         else:
+            print("destination folder: " + (config_list[index][:8]))
             raise ValueError('[Error] Wrong destination folder format')
 
 
@@ -128,6 +129,8 @@ def main():
         read_config_file(config_file, config_list, config_file)
     except ValueError as error:
         print(error)
+        print("please press any key to close the application")
+        input() #pause the application, waiting for user input
         sys.exit(0)
         
 
@@ -137,6 +140,8 @@ def main():
         get_destination_path(config_list, destination_path)
     except ValueError as error:
         print(error)
+        print("please press any key to close the application")
+        input() #pause the application, waiting for user input
         sys.exit(0)
     else:
         for path in destination_path:
@@ -146,6 +151,8 @@ def main():
         source_path = get_source_path(config_list)
     except ValueError as error:
         print(error)
+        print("please press any key to close the application")
+        input() #pause the application, waiting for user input
         sys.exit(0)
     else:
         logging.debug(source_path)
