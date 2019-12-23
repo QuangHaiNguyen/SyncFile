@@ -8,7 +8,13 @@ from dirsync import sync
 # init logging level
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
-def read_config_file(file_name, config_list):
+config_file = 'app/config.txt'
+log_file = 'app/log.txt'
+config_list = []
+source_path = None
+destination_path = []
+
+def read_config_file(file_name, config_list, config_file_path):
     """ Read the config file and parse the content of config file into a list
     file_name: path to the config file
     config_list: list to store the content of config file
@@ -20,18 +26,18 @@ def read_config_file(file_name, config_list):
                 config_list.append(line.rstrip())
     except FileNotFoundError as error:
         print(error)
-        create_config_file()
+        create_config_file(config_file_path)
         sys.exit(0)
     else:
         # Raise error if config file is empty
         if len(config_list) == 0:
             raise ValueError('[Error] Config file is empty')
 
-def create_config_file():
+def create_config_file(config_file_path):
     """ Create a config file with a template
     and asking user to modify the source and destination path
     """
-    config_file = open("app/config.txt",'w')
+    config_file = open(config_file_path,'w')
     config_file.write("SOURCE=FULL_PATH_TO_YOUR_SOURCE_FILE\n")
     config_file.write("TARGET1=FULL_PATH_TO_YOUR_DESTINATION_FILE\n")
     config_file.write("TARGET2=FULL_PATH_TO_YOUR_DESTINATION_FILE\n")
@@ -39,10 +45,10 @@ def create_config_file():
     print('A config file is created')
     print('Please modify the path and re run the code')
 
-def create_log_file():
+def create_log_file(log_file_path):
     """ Create an empty log file
     """
-    config_file = open("app/log.txt",'w')
+    config_file = open(log_file_path,'w')
     config_file.write("------------------------Sync File------------------------\n")
     config_file.close()
     print("log file created")
@@ -74,16 +80,16 @@ def hash_directory(path):
 
     return digest.hexdigest()
 
-def logging_backup_time_stamp(hash_tag):
+def logging_backup_time_stamp(hash_tag, log_file_path):
     today = datetime.now()
     str_date_time = today.strftime("%Y") + today.strftime("%m") + today.strftime("%d") + '_'+ today.strftime("%H%M%S")
     try:
-        with open('app/log.txt', 'a') as file:
+        with open(log_file_path, 'a') as file:
             file.write(str_date_time + '_' + hash_tag + '\n')
     except FileNotFoundError as error:
         print(error)
-        create_log_file()
-        with open('app/log.txt', 'a') as file:
+        create_log_file(log_file)
+        with open(log_file, 'a') as file:
             file.write(str_date_time + '_' + hash_tag + '\n')
     print('logging done')
         
@@ -111,14 +117,11 @@ def get_source_path(config_list, ):
 
 # Main Function
 def main():
-    config_file = 'app/config.txt'
-    config_list = []
-    source_path = None
-    destination_path = []
+    
     print("SyncFile Application")
 
     try:
-        read_config_file(config_file, config_list)
+        read_config_file(config_file, config_list, config_file)
     except ValueError as error:
         print(error)
         sys.exit(0)
@@ -144,7 +147,7 @@ def main():
         logging.debug(source_path)
 
     tag = hash_directory(source_path)
-    logging_backup_time_stamp(tag)
+    logging_backup_time_stamp(tag, log_file)
     for path in destination_path:
         sync(source_path, path, 'diff', purge = True, content = True, create = True)
         sync(source_path, path, 'sync', purge = True, content = True, create = True)
