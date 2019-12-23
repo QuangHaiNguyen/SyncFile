@@ -1,7 +1,9 @@
 import os
 import logging
 import sys
-
+import hashlib
+from datetime import datetime
+from dirsync import sync
 
 # init logging level
 logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
@@ -38,6 +40,11 @@ def create_config_file():
     print('Please modify the path and re run the code')
 
 def create_log_file():
+    """ Create an empty log file
+    """
+    config_file = open("app/log.txt",'w')
+    config_file.write("------------------------Sync File------------------------\n")
+    config_file.close()
     print("log file created")
 
 def print_config(config_list):
@@ -47,6 +54,39 @@ def print_config(config_list):
     for config in config_list:
         print(config)
 
+def hash_directory(path):
+    digest = hashlib.sha256()
+
+    for root, dirs, files in os.walk(path):
+        for names in files:
+            file_path = os.path.join(root, names)
+
+            # Hash the path and add to the digest to account for empty files/directories
+            digest.update(hashlib.sha1(file_path[len(path):].encode()).digest())
+
+            if os.path.isfile(file_path):
+                with open(file_path, 'rb') as f_obj:
+                    while True:
+                        buf = f_obj.read(1024 * 1024)
+                        if not buf:
+                            break
+                        digest.update(buf)
+
+    return digest.hexdigest()
+
+def logging_backup_time_stamp(hash_tag):
+    today = datetime.now()
+    str_date_time = today.strftime("%Y") + today.strftime("%m") + today.strftime("%d") + '_'+ today.strftime("%H%M%S")
+    try:
+        with open('app/log.txt', 'a') as file:
+            file.write(str_date_time + '_' + hash_tag + '\n')
+    except FileNotFoundError as error:
+        print(error)
+        create_log_file()
+        with open('app/log.txt', 'a') as file:
+            file.write(str_date_time + '_' + hash_tag + '\n')
+    print('logging done')
+        
 
 def get_destination_path(config_list, dest_path):
     """ Get the path of the folder, where we want to store the data to
@@ -70,8 +110,6 @@ def get_source_path(config_list, ):
         raise ValueError('[Error] Wrong source folder format')
 
 # Main Function
-
-
 def main():
     config_file = 'app/config.txt'
     config_list = []
@@ -92,7 +130,7 @@ def main():
         get_destination_path(config_list, destination_path)
     except ValueError as error:
         print(error)
-        return
+        sys.exit(0)
     else:
         for path in destination_path:
             logging.debug(path)
@@ -101,10 +139,15 @@ def main():
         source_path = get_source_path(config_list)
     except ValueError as error:
         print(error)
-        return
+        sys.exit(0)
     else:
         logging.debug(source_path)
 
+    tag = hash_directory(source_path)
+    logging_backup_time_stamp(tag)
+    for path in destination_path:
+        sync(source_path, path, 'diff', purge = True, content = True, create = True)
+        sync(source_path, path, 'sync', purge = True, content = True, create = True)
 
 # Run the main function
 if __name__ == "__main__":
