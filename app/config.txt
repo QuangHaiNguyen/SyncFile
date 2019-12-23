@@ -1,4 +1,3 @@
 SOURCE=Test Folder/Origin
 TARGET1=Test Folder/Destination
 
-Tards

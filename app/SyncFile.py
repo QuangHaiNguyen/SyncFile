@@ -27,6 +27,8 @@ def read_config_file(file_name, config_list, config_file_path):
     except FileNotFoundError as error:
         print(error)
         create_config_file(config_file_path)
+        print("please press any key to close the application")
+        input() #pause the application, waiting for user input
         sys.exit(0)
     else:
         # Raise error if config file is empty
@@ -37,13 +39,18 @@ def create_config_file(config_file_path):
     """ Create a config file with a template
     and asking user to modify the source and destination path
     """
-    config_file = open(config_file_path,'w')
-    config_file.write("SOURCE=FULL_PATH_TO_YOUR_SOURCE_FILE\n")
-    config_file.write("TARGET1=FULL_PATH_TO_YOUR_DESTINATION_FILE\n")
-    config_file.write("TARGET2=FULL_PATH_TO_YOUR_DESTINATION_FILE\n")
-    config_file.close()
-    print('A config file is created')
-    print('Please modify the path and re run the code')
+    try:
+        config_file = open(config_file_path,'w')
+        config_file.write("SOURCE=FULL_PATH_TO_YOUR_SOURCE_FILE\n")
+        config_file.write("TARGET1=FULL_PATH_TO_YOUR_DESTINATION_FILE\n")
+        config_file.write("TARGET2=FULL_PATH_TO_YOUR_DESTINATION_FILE\n")
+        config_file.close()
+        print('A config file is created')
+        print('Please modify the path and re run the code')
+    except FileNotFoundError as error:
+        print(error)
+        print("please press any key to close the application")
+        input() #pause the application, waiting for user input
 
 def create_log_file(log_file_path):
     """ Create an empty log file
