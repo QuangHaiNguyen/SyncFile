@@ -1,7 +1,7 @@
 """ Application Description here
-# TODO: write description
-# TODO: readme
+
 """
+
 import os
 import logging
 import sys
@@ -10,17 +10,27 @@ from datetime import datetime
 from dirsync import sync
 import time
 import progressbar
+from progress.spinner import Spinner
+
+# To do list
+# TODO: write description
+# TODO: readme
+# TODO: a GUI ??
+
+MAJOR_VERSION = 0
+MINOR_VERSION = 99
 
 
 # init logging level
 # set logging level to DEBUG for DEBUG message
 logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
-config_file = 'app/config.txt'
-log_file = 'app/log.txt'
-config_list = []
-source_path = None
-destination_path = []
+# Global variables
+config_file = 'app/config.txt' # Path of the configuration file
+log_file = 'app/log.txt' # Path of log file
+config_list = [] # list to store the configuration
+source_path = None # store the source folder path
+destination_path = [] # list to store destination paths
 
 def read_config_file(file_name, config_list, config_file_path):
     """ Read the config file and parse the content of config file into a list
@@ -83,7 +93,12 @@ def create_log_file(log_file_path):
     """
 
     config_file = open(log_file_path,'a')
-    config_file.write("Sync File\n")
+    config_file.write("********************************************************************\n")
+    config_file.write("* SyncFile\n")
+    config_file.write("* Version: " + str(MAJOR_VERSION) + "." + str(MINOR_VERSION) + "\n")
+    config_file.write("* Author: Quang Hai Nguyen\n")
+    config_file.write("* email: hai.nguyen.quang@outlook.com\n")
+    config_file.write("********************************************************************\n")
     config_file.close()
     print("log file created")
 
@@ -94,6 +109,7 @@ def print_config(config_list):
     ----------
     config_list: the list we want to print
     """
+    print("Configuration:")
     for config in config_list:
         print(config)
 
@@ -143,13 +159,14 @@ def logging(hash_tag, log_file_path):
         print("Log file does not exist. Create a new log file")
         create_log_file(log_file_path)
 
+    #get date time and building a string out of them
     today = datetime.now()
     str_date_time = today.strftime("%Y") + today.strftime("%m") + today.strftime("%d") + '_'+ today.strftime("%H%M%S")
     try:
         log_file = open(log_file_path,'a')
-        log_file.write("------------------------------------------------------\n")
         log_file.write("DATE: " + str_date_time + '\n')
         log_file.write("HASH: " + hash_tag + "\n")
+        log_file.write("-------------------------------------------------------\n")
         log_file.close()
     except Exception as error:
         # Does not expect any error here but we catch and print any error just in case
@@ -212,8 +229,17 @@ def get_source_path(config_list):
 
 # Main Function
 def main():
-    
-    print("SyncFile Application")
+    """ Main funtion
+
+    """
+    # Print header of the script
+    print("\n")
+    print("********************************************************************")
+    print("* SyncFile")
+    print("* Version: " + str(MAJOR_VERSION) + "." + str(MINOR_VERSION))
+    print("* Author: Quang Hai Nguyen")
+    print("* email: hai.nguyen.quang@outlook.com")
+    print("********************************************************************")
 
     try:
         read_config_file(config_file, config_list, config_file)
@@ -223,6 +249,7 @@ def main():
         input()#pause the application, waiting for user input
         sys.exit(0)
     
+    #Print the configuration 
     print_config(config_list)
     
     try:
@@ -245,10 +272,12 @@ def main():
     logging(tag, log_file)
     print("Backing up data...")
     for path in destination_path:
+        print("----------------------------------------------------------------")
         print("BACKUP DESTINATION: " + path + "\n")
         sync(source_path, path, 'sync', purge = True, content = True, create = True)
 
-# Run the main function
+
+# Entry point of the application
 if __name__ == "__main__":
     main()
     print("Application completed! Please press any key to close the application")
