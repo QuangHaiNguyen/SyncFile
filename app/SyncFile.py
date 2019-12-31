@@ -1,33 +1,40 @@
-""" Application Description here
+""" FileSync Script
 
+Version 0.99
+Author: Quang Hai Nguyen
+email: hai.nguyen.quang@outlook.com
+
+The purpose of this script is copying the file from ONE source folder to 
+MULTIPLE destination folders.
+
+The first thing the script doing is looking for the config.txt file locating in
+the same folder. The config.txt file contains the path of the source and
+destination folders. If the config.txt does not exist, the script creates it
+and prompt user to enter the paths.
+
+The script also log the hash value of the source folder; date and time when the
+script is run into log.txt file. 
 """
 
 import os
-import logging
 import sys
 import hashlib
 from datetime import datetime
 from dirsync import sync
-import time
-import progressbar
-from progress.spinner import Spinner
+
 
 # To do list
 # TODO: write description
 # TODO: readme
 # TODO: a GUI ??
 
-MAJOR_VERSION = 0
-MINOR_VERSION = 99
+MAJOR_VERSION = 1
+MINOR_VERSION = 0
 
-
-# init logging level
-# set logging level to DEBUG for DEBUG message
-logging.basicConfig(stream=sys.stderr, level=logging.INFO)
 
 # Global variables
-config_file = 'app/config.txt' # Path of the configuration file
-log_file = 'app/log.txt' # Path of log file
+config_file = 'config.txt' # Path of the configuration file
+log_file = 'log.txt' # Path of log file
 config_list = [] # list to store the configuration
 source_path = None # store the source folder path
 destination_path = [] # list to store destination paths
