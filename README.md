@@ -42,19 +42,19 @@ python -m pip install dirsync
 
 * Put the script SyncFile.py to the folder you want to copy. If you run the script for the first time, the script will notify that the config file does not exist and it will create one for you.
 
-![config file is created](link)
+![config file is created](https://raw.githubusercontent.com/QuangHaiNguyen/SyncFile/master/doc/pictures/config_created.png)
 
 * Modify the source and the target folders.
 
-![config file template](link)
+![config file template](https://raw.githubusercontent.com/QuangHaiNguyen/SyncFile/master/doc/pictures/config_file_template.png)
 
 * Run the script again
 
-![result](link)
+![result](https://raw.githubusercontent.com/QuangHaiNguyen/SyncFile/master/doc/pictures/script_info.png)
 
 * You can check log file for additional information
 
-![log_file](link)
+![log_file](https://raw.githubusercontent.com/QuangHaiNguyen/SyncFile/master/doc/pictures/log_file.png)
 
 ## Future development
 
