@@ -1,6 +1,6 @@
 """ FileSync Script
 
-Version 0.99
+Version 1.0
 Author: Quang Hai Nguyen
 email: hai.nguyen.quang@outlook.com
 
@@ -16,12 +16,14 @@ The script also log the hash value of the source folder; date and time when the
 script is run into log.txt file. 
 """
 
+from importlib.resources import path
 import os
 import sys
 import hashlib
 from datetime import datetime
 from dirsync import sync
-
+from pathlib import Path
+from argparse import ArgumentParser
 
 # To do list
 # TODO: write description
@@ -39,7 +41,9 @@ config_list = [] # list to store the configuration
 source_path = None # store the source folder path
 destination_path = [] # list to store destination paths
 
-def read_config_file(file_name, config_list, config_file_path):
+def read_config_file(file_name : str, 
+                     config_list : str, 
+                     config_file_path : str) -> None:
     """ Read the config file and parse the content of config file into a list
 
     Parameters
@@ -48,21 +52,16 @@ def read_config_file(file_name, config_list, config_file_path):
     config_list:    list to store the content of config file
     """
     
-    try:
-        # Open the config file and read line by line
+    if os.path.exists(file_name):
         with open(file_name) as config_file:
             for line in config_file:
                 config_list.append(line.rstrip())
-    except FileNotFoundError as error:
-        print("Could not find any configuration file. New configuration file is being created...")
+    else:
+        print("Could not find any configuration file.")
+        print("New configuration file is created at {} ".format(config_file_path))
         create_config_file(config_file_path)
         print("please press any key to close the application")
-        input() #pause the application, waiting for user input
         sys.exit(0)
-    else:
-        # Raise error if config file is empty
-        if len(config_list) == 0:
-            raise ValueError('[Error] Config file is empty')
 
 def create_config_file(config_file_path):
     """ Create a config file with a template
@@ -87,7 +86,6 @@ def create_config_file(config_file_path):
     except Exception as error:
         print("An error has occured, please press any key to close the application")
         print(error)
-        input()#pause the application, waiting for user input
         sys.exit(0)
 
 def create_log_file(log_file_path):
@@ -168,7 +166,10 @@ def logging(hash_tag, log_file_path):
 
     #get date time and building a string out of them
     today = datetime.now()
-    str_date_time = today.strftime("%Y") + today.strftime("%m") + today.strftime("%d") + '_'+ today.strftime("%H%M%S")
+    str_date_time = today.strftime("%Y") + \
+                    today.strftime("%m") + \
+                    today.strftime("%d") + \
+                    '_'+ today.strftime("%H%M%S")
     try:
         log_file = open(log_file_path,'a')
         log_file.write("DATE: " + str_date_time + '\n')
@@ -179,7 +180,6 @@ def logging(hash_tag, log_file_path):
         # Does not expect any error here but we catch and print any error just in case
         print("An error has occured, please press any key to close the application")
         print(error)
-        input() #pause the application, waiting for user input
         sys.exit(0)
 
     print('Logging is completed')
@@ -239,6 +239,13 @@ def main():
     """ Main funtion
 
     """
+
+    parser = ArgumentParser()
+    parser.add_argument("-c", "--configuration", default="./config.txt", help="location of configuration file")
+    
+    config_file = parser.parse_args().configuration
+    
+    print(config_file)
     # Print header of the script
     print("\n")
     print("********************************************************************")
@@ -247,13 +254,12 @@ def main():
     print("* Author: Quang Hai Nguyen")
     print("* email: hai.nguyen.quang@outlook.com")
     print("********************************************************************")
-
+    
     try:
         read_config_file(config_file, config_list, config_file)
     except ValueError as error:
         print("An error has occured, please press any key to close the application")
         print(error)
-        input()#pause the application, waiting for user input
         sys.exit(0)
     
     #Print the configuration 
@@ -264,7 +270,6 @@ def main():
     except ValueError as error:
         print("An error has occured, please press any key to close the application")
         print(error)
-        input()#pause the application, waiting for user input
         sys.exit(0)
 
     try:
@@ -272,7 +277,6 @@ def main():
     except ValueError as error:
         print("An error has occured, please press any key to close the application")
         print(error)
-        input()#pause the application, waiting for user input
         sys.exit(0)
 
     tag = hash_directory(source_path)
@@ -287,5 +291,3 @@ def main():
 # Entry point of the application
 if __name__ == "__main__":
     main()
-    print("Application completed! Please press any key to close the application")
-    input() #pause the application, waiting for user input
